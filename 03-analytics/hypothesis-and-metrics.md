@@ -1,17 +1,25 @@
-# Hypothesis & Success Metrics
+# Hypothesis & Success Metrics (Module 3)
 
-> **Module 3 · ★ Deliverable 3.** Repo file `03-analytics/hypothesis-and-metrics.md` — part of your submission.
-> Do the lab in the **Module 3 · Exercise Guide** (linked from the Module 3 deck), then click **⬇ Download .md** — it saves as this exact file. Commit it here.
-> It feeds the **Problem, Value & Hypothesis** slide of your Module 6 final deck.
+## Pre-work · Hypothesis check
+- **Role , who you are solving for (from M2):** Consumer in collections who cannot pay their outstanding balance in full.
+- **Goal , what this user is ultimately trying to achieve:** Create an instalment plan that is affordable and that they can realistically keep.
+- **Friction / moment of misery , the specific pain blocking their goal:** The consumer struggles to find an instalment plan that fits their financial situation and may abandon the process or agree to a plan they cannot maintain.
+- **Current workaround , the external tool or manual process they rely on (M2):** The consumer contacts customer service or uses manual support to find a manageable payment arrangement.
+- **Problem Hook , your one-sentence framing of the business crisis (M1):** Consumers who cannot pay their balance in full struggle to create an instalment plan they can actually keep.
+- **Value Proposition , the outcome your initiative promised to deliver (M1):** Help consumers create a realistic and affordable instalment plan they can maintain, improving successful repayment and reducing failed payment plans.
 
-## Finalized product hypothesis
+## Read the evidence in your case
+- **Where does your case say people stall or leave? Does that match the friction you wrote in Module 2?:** The biggest drop happens early in the journey. Only 38% of consumers who receive outreach enter the portal, and only 22% of those who enter start the instalment journey. Once they start, 88.1% reach the affordability questions. This adds nuance to my Module 2 friction because the problem is not only creating an instalment plan consumers can keep. Many consumers are dropping before they even start the journey.
+- **What got better or worse in the case, and does that support the workaround your persona uses?:** Agreement rates improved from 43.1% in Month 1 to 46.0% in Month 6, and agent contact decreased from 33.4% to 31.0%. However, missed payments increased from 15.2% to 19.0%. This suggests that more consumers are creating agreements, but these agreements are not necessarily becoming easier to keep.
+- **Which user in the case is carrying the pain, and is that the person your Module 2 persona describes?:** Consumers with multiple open claims appear to carry the most pain. Consumers with 3+ open claims have only a 27.6% agreement rate, 43.0% agent contact rate, and only 19.3% self-service resolution, compared with consumers with one open claim at 52.1%, 25.6%, and 40.6%. Consumers with variable or shift income also have a lower agreement rate of 41.6% and a higher missed-payment rate of 22.5%. This adds more detail to my Module 2 persona by showing that consumers with more complex financial situations are particularly affected.
 
-> Based on [qual + quant evidence], I believe that [solving X] for [persona] will result in [outcome], as measured by a [X%] change in [success metric]. I will protect [guardrail metric] and make a go/no-go decision after [decision window].
-
-## Success metrics
-
-| Metric | Type | Target | Why it matters |
-|---|---|---|---|
-| _North-star_ | | _____ | _____ |
-| _Leading indicator_ | | _____ | _____ |
-| _Guardrail_ | | _____ | _____ |
+## Step 2 · Craft your hypothesis
+- **Qualitative evidence (from M2) , quote the specific friction / moment of misery for your persona:** Consumers who cannot pay their balance in full struggle to create an instalment plan that fits their financial situation and that they can realistically keep.
+- **Quantitative evidence (from M3) , name the metric or data point that confirms the pain; cite the number:** Only 22% of consumers who enter the portal start the instalment journey. Among those who create agreements, missed payments increased from 15.2% in Month 1 to 19.0% in Month 6. Consumers with variable or shift income have an even higher missed-payment rate of 22.5%
+- **Persona , role, goal, and the friction you confirmed in the reconciliation steps:** Consumers in collections who cannot pay their balance in full, especially those with more complex financial situations, who need an affordable instalment plan they can realistically maintain.
+- **Problem you are solving , one sentence describing the specific friction this initiative removes:** Consumers need a simpler way to start and create an instalment plan that matches what they can realistically afford and maintain.
+- **Strategic outcome , what behaviour change do you expect, and how does it map to retention / revenue / churn?:** More consumers successfully create sustainable instalment agreements and keep their payments, reducing failed payment plans and the need for agent support.
+- **Primary success metric (initiative signal) , the leading indicator that tells you the gap is closing:** Increase the percentage of consumers who successfully create an agreement after starting the instalment journey.
+- **Guardrail metric (product signal) , the metric that must NOT drop; it protects your existing base:** 60-day missed-payment rate of created agreements must not increase.
+- **Decision window , how much time or data before you scale, pivot, or kill? minimum threshold to proceed?:** Measure for 3 months and proceed if the agreement rate improves by at least 10% relative to baseline without increasing the 60-day missed-payment rate.
+- **Draft your full hypothesis sentence , one to three sentences; quote the metric, name the persona, name the outcome:** Based on qualitative evidence that consumers struggle to create an instalment plan they can realistically keep, and quantitative evidence showing an agreement rate around 46% and a 60-day missed-payment rate of 19%, I believe that making it easier for consumers in collections to create an affordable and sustainable instalment plan will increase the agreement rate by at least 10%. I will protect the 60-day missed-payment rate from increasing and make a go/no-go decision after 3 months.
