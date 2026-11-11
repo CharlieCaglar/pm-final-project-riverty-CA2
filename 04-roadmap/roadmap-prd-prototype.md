@@ -1,41 +1,20 @@
-# Feature Roadmap, Module 4 · BU Collection
+# Roadmap, PRD & Prototype (Module 4)
 
-**Scenario:** Riverty BU Collection, A Fair Way Forward
+## Your strategic anchors
+- **Persona (M2), who are you solving for?:** A consumer in collections who cannot pay their outstanding balance in full.
+- **Primary success metric (M3), your leading indicator:** Percentage of new instalment agreements with no missed payment within 60 days.
+- **Moment of misery (M2), the specific friction blocking the goal:** The consumer struggles to find an instalment plan that fits their financial situation and may abandon the process or agree to a plan they cannot maintain.
+- **Guardrail metric (M3), what must not drop or break:** Agent contact rate within 7 days
 
-**Team:** [your assumed team size]
+## Scan the backlog & set a human baseline
+- **My instinctive “quick wins” before touching the AI (2 to 3 feature IDs + why):** B2, B4 and B6. B2 looks like a quick win because it can reduce confusion around why income information is needed with relatively low effort. B4 can improve the handoff to an agent and avoid consumers repeating the same information. B6 can help consumers choose a payment date that better fits their income timing and may help them keep the plan.
 
-## Strategic anchors
-- **Persona:** A consumer in collections who cannot pay their outstanding balance in full.
-- **Primary metric:** Percentage of new instalment agreements with no missed payment within 60 days.
-- **Moment of misery:** The consumer struggles to find an instalment plan that fits their financial situation and may abandon the process or agree to a plan they cannot maintain.
-- **Guardrail:** Agent contact rate within 7 days.
+## Audit, override & decide
+- **Where did you override the AI? (feature + old vs. new score + why):** I changed B1 from Value 3 to Value 4 because our M3 data showed that consumers with multiple open claims have lower agreement rates, so I think this problem is more important than the AI originally suggested.
+- **Did the AI over-value a Sales/Eng request your M2 interviews don’t support?:** B8, the chat assistant on every portal page, does not have strong evidence that it solves our main affordability problem, so I decided to cut it.
+- **Did it underweight something your M3 cohort/funnel data strongly supports?:** Yes. B1 was underweighted because our M3 data showed that consumers with multiple open claims have lower agreement rates. This gives us stronger evidence that the multi-claim journey needs attention.
 
-## Scoring
-| Feature | Value | Effort | Quadrant | Decision | Rationale |
-|---|---|---|---|---|---|
-| B1 One plan for several open claims | 4 | 4 | Major Project | Next | Multi-claim consumers have lower agreement rates, so this is an important problem, but the solution is likely more complex. |
-| B2 Plain explainer for why income is asked and how it is used | 3 | 1 | Fill-In | Now | Research shows consumers are confused about why income is needed, and this is a simple way to reduce friction. |
-| B3 Affordability check before the plan options | 5 | 3 | Major Project | Now | This directly supports our main goal: helping consumers choose a plan they can actually keep. |
-| B4 Handoff summary for the agent when a consumer calls | 3 | 2 | Fill-In | Next | Consumers currently repeat information when contacting an agent, but this does not directly improve plan sustainability. |
-| B5 Photo upload that works on mobile, or skip the document under a set amount | 3 | 2 | Fill-In | Next | Document upload is a real drop-off point, especially on mobile, but it does not directly address whether the plan is sustainable. |
-| B6 Pick a payment date that matches pay day | 4 | 2 | Quick Win | Now | Flexible payment timing could help consumers keep their plan, especially those with variable income, but we still need to validate the impact. |
-| B7 Show the shortest plan first to raise recovery | 1 | 1 | Fill-In | Cut | This can push consumers toward higher monthly payments and works against our goal of sustainable plans. |
-| B8 Chat assistant on every portal page | 2 | 4 | Time Sinker | Cut | It is a broad solution without strong evidence that it solves our main affordability problem. |
-
-## Roadmap
-### NOW, this sprint
-- **B2 Plain explainer for why income is asked and how it is used**, Research shows consumers are confused about why income is needed, and this is a simple way to reduce friction.
-- **B3 Affordability check before the plan options**, This directly supports our main goal: helping consumers choose a plan they can actually keep.
-- **B6 Pick a payment date that matches pay day**, Flexible payment timing could help consumers keep their plan, especially those with variable income, but we still need to validate the impact.
-
-### NEXT, the following sprints
-- **B1 One plan for several open claims**, Multi-claim consumers have lower agreement rates, so this is an important problem, but the solution is likely more complex.
-- **B4 Handoff summary for the agent when a consumer calls**, Consumers currently repeat information when contacting an agent, but this does not directly improve plan sustainability.
-- **B5 Photo upload that works on mobile, or skip the document under a set amount**, Document upload is a real drop-off point, especially on mobile, but it does not directly address whether the plan is sustainable.
-
-### LATER, backlog
-- _(none)_
-
-### ✂ Cut List
-- **B7 Show the shortest plan first to raise recovery**, This can push consumers toward higher monthly payments and works against our goal of sustainable plans.
-- **B8 Chat assistant on every portal page**, It is a broad solution without strong evidence that it solves our main affordability problem.
+## Generate your interactive roadmap
+- **My “Now” lane (this sprint), the 2 to 3 quick wins I’ll build first:** B2, B3 and B6. First explain clearly why income information is needed, then help consumers choose an affordable plan, and allow them to select a payment date that better fits their income timing.
+- **What I cut, and the “no” I’m protecting the scope from:** I cut B7 and B8. B7 can push consumers toward higher monthly payments, which works against our goal of sustainable plans. B8 is a broad solution without strong evidence that it solves our main affordability problem.
+- **Prototype/roadmap screenshot link (paste into your deliverables):** https://github.com/CharlieCaglar/pm-final-project-riverty-CA2/tree/main/04-roadmap
