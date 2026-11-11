@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BU Collection · Product Roadmap</title>
+<style>
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --ink:#14212b; --muted:#566673; --line:#d6dde3;
+  --now:#0f5c63; --next:#3b4f8f; --later:#6b7480; --cut:#8a3b3b;
+  --qw-bg:#d9f1e3; --qw-fg:#0d5a33;
+  --bb-bg:#dbe6fb; --bb-fg:#1e3f8f;
+  --fi-bg:#fbeccb; --fi-fg:#7a5006;
+  --mp-bg:#f8dcdc; --mp-fg:#8a1f1f;
+  --focus:#1a6bff;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#10171d; --surface:#18222b; --ink:#e8eef2; --muted:#9bacb8; --line:#2b3945;
+    --now:#4fb3bb; --next:#8ea2e6; --later:#98a3af; --cut:#e08a8a;
+    --qw-bg:#16382a; --qw-fg:#8fe0b2;
+    --bb-bg:#1c2c52; --bb-fg:#a8c0ff;
+    --fi-bg:#3d2f10; --fi-fg:#f1cb7b;
+    --mp-bg:#431d1d; --mp-fg:#f2a4a4;
+    --focus:#7fb0ff;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 24px 64px}
+header{display:flex;flex-wrap:wrap;gap:16px 32px;justify-content:space-between;align-items:flex-end;
+  padding-bottom:20px;border-bottom:2px solid var(--ink)}
+h1{margin:0;font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:-.02em;line-height:1.1;font-weight:750}
+.sub{margin:6px 0 0;color:var(--muted);font-size:1rem}
+.meta{display:flex;gap:24px;font-size:.95rem}
+.meta div{display:flex;flex-direction:column}
+.meta b{font-size:1.4rem;font-weight:700;line-height:1.1}
+.meta span{color:var(--muted);font-size:.85rem}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0 24px}
+.toolbar .lbl{font-size:.9rem;color:var(--muted);margin-right:4px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  font:inherit;font-size:.9rem;padding:6px 14px;border-radius:999px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px}
+.chip .dot{width:10px;height:10px;border-radius:50%}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,.restore:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
+.lane{background:transparent;min-width:0}
+.lane-head{border-top:6px solid var(--c);padding:12px 2px 14px}
+.lane-head h2{margin:0;font-size:1.35rem;letter-spacing:.01em;color:var(--c);display:flex;justify-content:space-between;align-items:baseline}
+.lane-head h2 small{font-size:.85rem;font-weight:500;color:var(--muted)}
+.lane-head p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.cards{display:flex;flex-direction:column;gap:14px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c);
+  border-radius:8px;padding:16px 16px 14px;cursor:pointer;text-align:left;width:100%;font:inherit;color:inherit}
+.card:hover{border-color:var(--c)}
+.card-top{display:flex;gap:10px;justify-content:space-between;align-items:flex-start}
+.id{font-weight:700;color:var(--c);font-size:.9rem;white-space:nowrap}
+.card h3{margin:0;font-size:1.05rem;line-height:1.3;font-weight:650}
+.why{margin:10px 0 0;color:var(--muted);font-size:.93rem;max-width:62ch}
+.badge{display:inline-block;margin-top:12px;padding:3px 10px;border-radius:6px;font-size:.8rem;font-weight:650}
+.q-qw{background:var(--qw-bg);color:var(--qw-fg)}
+.q-bb{background:var(--bb-bg);color:var(--bb-fg)}
+.q-fi{background:var(--fi-bg);color:var(--fi-fg)}
+.q-mp{background:var(--mp-bg);color:var(--mp-fg)}
+.card .more{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:.88rem}
+.card[aria-expanded="true"] .more{display:block}
+.more dt{color:var(--muted);float:left;clear:left;width:5.5rem}
+.more dd{margin:0 0 4px 5.5rem}
+.card.hidden{display:none}
+.empty{border:1.5px dashed var(--line);border-radius:8px;padding:22px 16px;color:var(--muted);font-size:.93rem}
+
+.cut{margin-top:44px;padding-top:6px}
+.cut .lane-head{--c:var(--cut)}
+.cut .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cut .card{cursor:default;opacity:.92}
+.cut .card h3{text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:var(--cut)}
+.cut-note{font-size:.88rem;color:var(--cut);font-weight:600;margin-top:10px}
+
+.legend{margin-top:40px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:8px;
+  font-size:.9rem;color:var(--muted)}
+.legend ul{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 24px}
+.legend .badge{margin:0 8px 0 0}
+
+@media (max-width:900px){.board{grid-template-columns:1fr}.wrap{padding:24px 16px 48px}}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>BU Collection roadmap</h1>
+    <p class="sub">Helping consumers choose a payment plan they can actually keep.</p>
+  </div>
+  <div class="meta" aria-label="Summary">
+    <div><b>6</b><span>Team size (assumed)</span></div>
+    <div><b id="count-active">6</b><span>Planned items</span></div>
+    <div><b>2</b><span>Cut</span></div>
+  </div>
+</header>
+
+<div class="toolbar" role="group" aria-label="Filter by quadrant">
+  <span class="lbl">Show quadrant:</span>
+  <button class="chip" data-q="all" aria-pressed="true">All</button>
+  <button class="chip" data-q="qw" aria-pressed="false"><span class="dot" style="background:var(--qw-fg)"></span>Quick win</button>
+  <button class="chip" data-q="bb" aria-pressed="false"><span class="dot" style="background:var(--bb-fg)"></span>Big bet</button>
+  <button class="chip" data-q="fi" aria-pressed="false"><span class="dot" style="background:var(--fi-fg)"></span>Fill-in</button>
+</div>
+
+<main class="board" id="board"></main>
+
+<section class="cut" aria-labelledby="cut-title">
+  <div class="lane-head"><h2 id="cut-title">Cut list <small id="cut-count"></small></h2>
+    <p>Not planned. Kept here so the reasoning stays visible.</p></div>
+  <div class="cards" id="cut-cards"></div>
+</section>
+
+<section class="legend" aria-label="Quadrant legend">
+  <strong style="color:var(--ink)">How quadrants work</strong> Each item is placed by its impact on plan sustainability against the effort to build it. Click a card to see details.
+  <ul>
+    <li><span class="badge q-qw">Quick win</span>High impact, low effort</li>
+    <li><span class="badge q-bb">Big bet</span>High impact, high effort</li>
+    <li><span class="badge q-fi">Fill-in</span>Lower impact, lower effort</li>
+    <li><span class="badge q-mp">Money pit</span>Low impact or harmful, high cost</li>
+  </ul>
+</section>
+
+</div>
+
+<script>
+const QUAD = {
+  qw:{label:"Quick win", cls:"q-qw"},
+  bb:{label:"Big bet",   cls:"q-bb"},
+  fi:{label:"Fill-in",   cls:"q-fi"},
+  mp:{label:"Money pit", cls:"q-mp"}
+};
+
+const LANES = [
+  {key:"now",  title:"Now",  hint:"This sprint", color:"var(--now)",  items:[
+    {id:"B2", name:"Plain explainer for why income is asked and how it is used", q:"qw",
+     why:"Research shows consumers are confused about why income is needed, and this is a simple way to reduce friction.",
+     impact:"Less friction at the income step", effort:"Low"},
+    {id:"B3", name:"Affordability check before the plan options", q:"bb",
+     why:"This directly supports our main goal: helping consumers choose a plan they can actually keep.",
+     impact:"Directly improves plan sustainability", effort:"Medium"},
+    {id:"B6", name:"Pick a payment date that matches pay day", q:"qw",
+     why:"Flexible payment timing could help consumers keep their plan, especially those with variable income, but we still need to validate the impact.",
+     impact:"Likely helps plan retention; to be validated", effort:"Low to medium"}
+  ]},
+  {key:"next", title:"Next", hint:"The following sprints", color:"var(--next)", items:[
+    {id:"B1", name:"One plan for several open claims", q:"bb",
+     why:"Multi-claim consumers have lower agreement rates, so this is an important problem, but the solution is likely more complex.",
+     impact:"Higher agreement for multi-claim consumers", effort:"High"},
+    {id:"B4", name:"Handoff summary for the agent when a consumer calls", q:"fi",
+     why:"Consumers currently repeat information when contacting an agent, but this does not directly improve plan sustainability.",
+     impact:"Better agent experience, indirect effect on plans", effort:"Medium"},
+    {id:"B5", name:"Photo upload that works on mobile, or skip the document under a set amount", q:"fi",
+     why:"Document upload is a real drop-off point, especially on mobile, but it does not directly address whether the plan is sustainable.",
+     impact:"Fewer mobile drop-offs, indirect effect on plans", effort:"Medium"}
+  ]},
+  {key:"later",title:"Later",hint:"Backlog", color:"var(--later)", items:[]}
+];
+
+const CUT = [
+  {id:"B7", name:"Show the shortest plan first to raise recovery", q:"mp",
+   why:"This can push consumers toward higher monthly payments and works against our goal of sustainable plans."},
+  {id:"B8", name:"Chat assistant on every portal page", q:"mp",
+   why:"It is a broad solution without strong evidence that it solves our main affordability problem."}
+];
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function cardHTML(it, opts={}){
+  const q = QUAD[it.q];
+  const more = opts.cut ? "" :
+    `<dl class="more"><dt>Impact</dt><dd>${esc(it.impact)}</dd><dt>Effort</dt><dd>${esc(it.effort)}</dd></dl>`;
+  const tag = opts.cut ? "article" : "button";
+  const attrs = opts.cut ? "" : ` type="button" aria-expanded="false"`;
+  return `<${tag} class="card" data-q="${it.q}"${attrs} style="--c:${opts.color||'var(--cut)'}">
+    <div class="card-top"><h3>${esc(it.name)}</h3><span class="id">${esc(it.id)}</span></div>
+    <p class="why">${esc(it.why)}</p>
+    <span class="badge ${q.cls}">${q.label}</span>
+    ${more}
+  </${tag}>`;
+}
+
+const board = document.getElementById("board");
+board.innerHTML = LANES.map(l => `
+  <section class="lane" style="--c:${l.color}" aria-labelledby="h-${l.key}">
+    <div class="lane-head">
+      <h2 id="h-${l.key}">${l.title} <small class="lane-count" data-lane="${l.key}">${l.items.length}</small></h2>
+      <p>${l.hint}</p>
+    </div>
+    <div class="cards" data-lane="${l.key}">
+      ${l.items.length ? l.items.map(i => cardHTML(i,{color:l.color})).join("") :
+        `<div class="empty">Nothing here yet. Items move up from the backlog when they are ready to plan.</div>`}
+    </div>
+  </section>`).join("");
+
+document.getElementById("cut-cards").innerHTML = CUT.map(i => cardHTML(i,{cut:true})).join("");
+document.getElementById("cut-count").textContent = CUT.length + " items";
+
+/* expand / collapse */
+board.addEventListener("click", e => {
+  const card = e.target.closest(".card");
+  if(!card) return;
+  const open = card.getAttribute("aria-expanded") === "true";
+  card.setAttribute("aria-expanded", String(!open));
+});
+
+/* quadrant filter */
+const chips = document.querySelectorAll(".chip");
+chips.forEach(ch => ch.addEventListener("click", () => {
+  chips.forEach(c => c.setAttribute("aria-pressed", String(c === ch)));
+  const q = ch.dataset.q;
+  let visible = 0;
+  board.querySelectorAll(".card").forEach(c => {
+    const show = q === "all" || c.dataset.q === q;
+    c.classList.toggle("hidden", !show);
+    if(show) visible++;
+  });
+  document.getElementById("count-active").textContent = visible;
+  board.querySelectorAll(".cards").forEach(wrap => {
+    const hasCard = wrap.querySelector(".card:not(.hidden)");
+    let note = wrap.querySelector(".filter-empty");
+    if(!hasCard && wrap.querySelector(".card")){
+      if(!note){ note = document.createElement("div"); note.className = "empty filter-empty";
+        note.textContent = "No items in this quadrant."; wrap.appendChild(note); }
+    } else if(note){ note.remove(); }
+  });
+}));
+</script>
+</body>
+</html>
