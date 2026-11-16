@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Affordability check before the plan options (B3) · Final project</title>
+<style>
+  :root {
+    --bg: #07162C;
+    --fg: #ffffff;
+    --muted: #cbd5e1;
+    --orange: #fb923c;
+    --cyan: #22d3ee;
+    --teal: #34d399;
+    --blue: #60a5fa;
+    --violet: #a78bfa;
+    --pink: #f472b6;
+    --eyebrow: #fdba74;
+    --border: rgba(251, 146, 60, 0.25);
+    --card: rgba(255, 255, 255, 0.035);
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    font-size: clamp(14px, 1.05vw + 6px, 17px);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  /* progress bar and dot nav */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: linear-gradient(90deg, var(--orange), var(--pink));
+    z-index: 50;
+  }
+  #dots {
+    position: fixed; right: 14px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px; z-index: 50;
+  }
+  #dots button {
+    width: 11px; height: 11px; padding: 0; border-radius: 50%;
+    border: 1px solid var(--muted); background: transparent; cursor: pointer;
+  }
+  #dots button.on { background: var(--orange); border-color: var(--orange); }
+  #dots button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--cyan); outline-offset: 3px;
+  }
+
+  /* sections */
+  section {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: clamp(28px, 6vh, 64px) clamp(22px, 6vw, 96px);
+  }
+  .wrap { width: 100%; max-width: 1180px; margin: 0 auto; }
+  .eyebrow {
+    font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--eyebrow); font-size: 0.78rem; margin: 0 0 10px;
+  }
+  h1, h2, h3 { font-family: var(--sans); margin: 0; line-height: 1.12; }
+  h2 { font-size: clamp(1.7rem, 3.2vw, 2.6rem); margin-bottom: 22px; letter-spacing: -0.01em; }
+  h3 { font-size: 1.02rem; }
+  p { margin: 0 0 10px; }
+  .muted { color: var(--muted); }
+  .label {
+    font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 0.7rem; color: var(--eyebrow); margin: 0 0 8px; display: block;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 20px;
+  }
+  .hero {
+    background: linear-gradient(135deg, rgba(251,146,60,0.16), rgba(34,211,238,0.06));
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
+    border-radius: 16px;
+  }
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g5 { grid-template-columns: 1.15fr 1fr; }
+  @media (max-width: 900px) {
+    .g2, .g3, .g4, .g5 { grid-template-columns: 1fr; }
+    #dots { display: none; }
+  }
+  .mono { font-family: var(--mono); }
+  .pill {
+    display: inline-block; font-family: var(--mono); font-size: 0.78rem;
+    padding: 5px 12px; border-radius: 999px; border: 1px solid currentColor;
+    margin: 0 6px 6px 0; line-height: 1.3;
+  }
+  .c-orange { color: var(--orange); }
+  .c-cyan { color: var(--cyan); }
+  .c-teal { color: var(--teal); }
+  .c-blue { color: var(--blue); }
+  .c-violet { color: var(--violet); }
+  .c-pink { color: var(--pink); }
+  .stat { font-family: var(--mono); font-size: clamp(1.5rem, 2.6vw, 2.2rem); font-weight: 700; line-height: 1; }
+  .small { font-size: 0.88rem; }
+  ul.tight { margin: 0; padding-left: 1.1em; }
+  ul.tight li { margin-bottom: 5px; }
+  .callout {
+    border-left: 4px solid var(--orange); background: rgba(251,146,60,0.1);
+    border-radius: 0 12px 12px 0; padding: 14px 18px;
+  }
+  .callout.bad { border-left-color: var(--pink); background: rgba(244,114,182,0.1); }
+
+  /* cover */
+  .cover h1 { font-size: clamp(2.3rem, 5.6vw, 4.6rem); max-width: 16ch; letter-spacing: -0.02em; margin-bottom: 20px; }
+  .cover .pitch { font-size: clamp(1.05rem, 1.7vw, 1.35rem); max-width: 52ch; color: var(--muted); margin-bottom: 30px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 14px 34px; align-items: flex-start; }
+  .meta a { color: var(--cyan); word-break: break-all; }
+  .meta b { display: block; font-weight: 600; }
+
+  /* journey map */
+  .journey { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .step {
+    border: 1px solid var(--border); border-radius: 12px; padding: 12px 12px 14px;
+    background: var(--card); position: relative; font-size: 0.88rem;
+  }
+  .step::after {
+    content: ""; position: absolute; right: -9px; top: 50%; width: 8px; height: 8px;
+    border-top: 2px solid var(--muted); border-right: 2px solid var(--muted);
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .step:last-child::after { display: none; }
+  .step.misery {
+    border: 2px solid var(--pink); background: rgba(244,114,182,0.14);
+    box-shadow: 0 0 0 5px rgba(244,114,182,0.12), 0 14px 30px rgba(0,0,0,0.4);
+  }
+  .step .tag { font-family: var(--mono); font-size: 0.68rem; color: var(--pink); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 6px; }
+  @media (max-width: 900px) {
+    .journey { grid-template-columns: 1fr; }
+    .step::after { display: none; }
+  }
+
+  /* moscow */
+  .moscow h3 { font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .moscow ul { margin: 0; padding-left: 1.1em; font-size: 0.82rem; }
+  .moscow li { margin-bottom: 4px; }
+
+  .rule { font-family: var(--mono); font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; display: block; }
+  .tile-sub { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin-top: 8px; display: block; }
+
+  .submit-pill {
+    display: inline-block; margin-top: 26px; padding: 12px 24px; border-radius: 999px;
+    background: var(--orange); color: #07162C; font-weight: 700; font-size: 1.05rem;
+  }
+  .foot a { color: var(--cyan); word-break: break-all; }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<nav id="dots" aria-label="Slide navigation"></nav>
+
+<main>
+
+<!-- COVER -->
+<section id="cover" class="cover" aria-label="Cover">
+  <div class="wrap">
+    <p class="eyebrow">Product School · Product Management certification · Final project</p>
+    <h1>Affordability check before the plan options (B3)</h1>
+    <p class="pitch">For consumers who cannot pay their full balance at once, we help them create a clear, affordable instalment plan they can actually keep, with easy access to an agent when needed.</p>
+    <div class="meta">
+      <div><span class="label">Name / cohort</span><b>Caglar Acar · PM Cohort 2</b></div>
+      <div><span class="label">Repo link</span><a href="https://github.com/CharlieCaglar/pm-final-project-riverty-CA2">https://github.com/CharlieCaglar/pm-final-project-riverty-CA2</a></div>
+      <div><span class="label">Prototype</span><span class="pill c-orange">04-roadmap/prototype.html</span></div>
+    </div>
+    <p class="muted small" style="margin-top:28px">Riverty BU Collection · A Fair Way Forward. Scroll, or use the arrow keys.</p>
+  </div>
+</section>
+
+<!-- SLIDE 5 -->
+<section id="s5" aria-label="Slide 5 Strategy">
+  <div class="wrap">
+    <p class="eyebrow">Slide 5 · Strategy</p>
+    <h2>Problem, value proposition and hypothesis</h2>
+    <div class="grid g2">
+      <div class="card hero">
+        <span class="label">Problem statement hook</span>
+        <p style="font-size:1.12rem">Consumers who cannot pay their balance in full are struggling to confidently create sustainable instalment plans digitally, causing avoidable agent contact and putting both recovery performance and Riverty’s self-service ambition at risk.</p>
+      </div>
+      <div class="card">
+        <span class="label">Value proposition</span>
+        <p style="font-size:1.05rem">A clear digital instalment journey that helps consumers understand their situation, agree to a plan they can realistically keep, and reach an agent seamlessly when needed. This improves sustainable recovery and reduces avoidable agent contact.</p>
+      </div>
+    </div>
+    <div class="grid g4" style="margin-top:16px">
+      <div class="card"><span class="stat c-cyan">22%</span><span class="tile-sub">of portal visitors start the instalment journey</span></div>
+      <div class="card"><span class="stat c-teal">46%</span><span class="tile-sub">of started journeys end in an agreement</span></div>
+      <div class="card"><span class="stat c-orange">19%</span><span class="tile-sub">of new agreements miss a payment within 60 days (22.5% for variable or shift income)</span></div>
+      <div class="card"><span class="stat c-pink">27.6%</span><span class="tile-sub">agreement rate for consumers with 3 or more open claims</span></div>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <span class="label">Data-backed hypothesis</span>
+      <p style="margin:0">Adding an affordability check before the plan options will raise the share of new agreements with no missed payment within 60 days by 3 percentage points (81% to 84%), while agent contact within 7 days stays below 33.0%.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6 -->
+<section id="s6" aria-label="Slide 6 Research">
+  <div class="wrap">
+    <p class="eyebrow">Slide 6 · Research</p>
+    <h2>Competitive analysis, workaround and journey map</h2>
+    <div class="card">
+      <span class="label">Competitive analysis / workaround</span>
+      <div class="grid g2">
+        <div>
+          <p><b>Persona:</b> a consumer in financial difficulty who cannot pay the full balance at once and needs an instalment plan.</p>
+          <p class="muted">No external tools are supported by the research. The main workaround is calling an agent when the digital journey does not give enough clarity, and 31.0% of journey starters contact an agent within 7 days.</p>
+        </div>
+        <div>
+          <b class="small">Evidence</b>
+          <ul class="tight small">
+            <li>N-02 chose the shortest plan because it looked right and missed the second payment.</li>
+            <li>N-04 preferred calling because a person could explain the cost.</li>
+            <li>N-08 shows agents have to ask again for information consumers already entered online.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <span class="label" style="margin-top:22px">Journey map</span>
+    <div class="journey">
+      <div class="step"><b>Start</b><br>the digital instalment journey</div>
+      <div class="step"><b>Try</b><br>to work out what is affordable</div>
+      <div class="step"><b>Unsure</b><br>why income is asked</div>
+      <div class="step misery"><span class="tag">Moment of misery</span><b>Guess a plan, leave, or call an agent</b></div>
+      <div class="step"><b>Repeat</b><br>the same information to the agent</div>
+      <div class="step"><b>Agree</b><br>to a plan that may not be sustainable</div>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <b>Where the solution intervenes:</b> an affordability check before the plan options explains why income is asked and shows only plans the consumer can keep.
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7 -->
+<section id="s7" aria-label="Slide 7 Blueprint">
+  <div class="wrap">
+    <p class="eyebrow">Slide 7 · Blueprint</p>
+    <h2>Roadmap, MoSCoW scope and PRD highlights</h2>
+    <div class="grid g5">
+      <div class="card">
+        <span class="label">Prioritization / roadmap</span>
+        <p class="small"><b>Persona:</b> a consumer in collections who cannot pay their outstanding balance in full.<br>
+        <b>Primary metric:</b> % of new agreements with no missed payment within 60 days.<br>
+        <b>Guardrail:</b> agent contact within 7 days.</p>
+        <p class="small">I overrode the AI on B1 (multi-claim journey), raising its value from 3 to 4 because consumers with 3+ open claims have only a 27.6% agreement rate.</p>
+        <span class="label" style="margin-top:12px">Now lane</span>
+        <span class="pill c-teal">B2 · explain why income is asked</span>
+        <span class="pill c-orange">B3 · affordability check</span>
+        <span class="pill c-teal">B6 · payday-aligned dates</span>
+        <span class="label" style="margin-top:10px">Cut</span>
+        <p class="small muted" style="margin:0"><b>B7</b>, because it can push consumers toward higher monthly payments. <b>B8</b> (chat assistant on every page), because there is no evidence it solves the affordability problem.</p>
+      </div>
+      <div class="card moscow">
+        <span class="label">MoSCoW scope</span>
+        <div class="grid" style="grid-template-columns:1fr 1fr; gap:12px">
+          <div>
+            <h3 class="c-teal">Must</h3>
+            <ul>
+              <li>Simple form: monthly income and essential costs</li>
+              <li>Calculate an affordable monthly limit</li>
+              <li>Show only plans within the limit</li>
+              <li>Edit the numbers and recalculate</li>
+              <li>If no plan fits, offer agent support</li>
+              <li>Short explanation of why income is needed</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="c-blue">Should</h3>
+            <ul>
+              <li>Input validation</li>
+              <li>Better explanation of how income is used</li>
+              <li>Confirmation the plan is within the limit</li>
+              <li>Save and resume</li>
+              <li>Funnel instrumentation</li>
+            </ul>
+            <h3 class="c-violet" style="margin-top:10px">Could</h3>
+            <ul>
+              <li>Support for variable income</li>
+              <li>Itemised essential costs</li>
+              <li>Payment-date integration</li>
+              <li>Agent visibility of the result</li>
+            </ul>
+          </div>
+        </div>
+        <h3 class="c-pink" style="margin-top:10px">Won’t (now)</h3>
+        <p class="small muted" style="margin:0">Multi-claim plans, open-banking verification, credit scoring, chat assistant, agent tooling.</p>
+      </div>
+    </div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card">
+        <span class="label">Safety guard</span>
+        <p class="small" style="margin:0">Never show a plan above the limit. Never present the result as financial advice.</p>
+      </div>
+      <div class="card">
+        <span class="label">Evals</span>
+        <ul class="tight small">
+          <li>100% of displayed plans within the limit</li>
+          <li>Plan options reached within 2 minutes</li>
+          <li>100% of no-fit cases offer agent support</li>
+        </ul>
+      </div>
+      <div class="card hero">
+        <span class="label">Prototype</span>
+        <span class="pill c-orange">04-roadmap/prototype.html</span>
+        <p class="small" style="margin:6px 0 0">The prototype exposed a gap: the PRD did not define how the limit is calculated, so the sample rule is 70% of income minus essential costs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8 -->
+<section id="s8" aria-label="Slide 8 Validation">
+  <div class="wrap">
+    <p class="eyebrow">Slide 8 · Validation</p>
+    <h2>Experiment plan</h2>
+    <div class="card hero">
+      <span class="label">Hypothesis</span>
+      <p style="margin:0; font-size:1.08rem">Adding an affordability check before the plan options raises the share of new agreements with no missed payment within 60 days by 3 percentage points (81% to 84%).</p>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <span class="label">Control (A)</span>
+        <p class="small" style="margin:0">Today’s journey with the existing plan terms and no affordability signal.</p>
+      </div>
+      <div class="card">
+        <span class="label">Variant (B)</span>
+        <p class="small" style="margin:0">Control plus the B3 affordability check, one change only.</p>
+      </div>
+    </div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card">
+        <span class="label">Primary metric</span>
+        <span class="stat c-teal">81% → 84%</span>
+        <span class="tile-sub">No missed payment within 60 days. Baseline 81%, MDE 3 points.</span>
+      </div>
+      <div class="card">
+        <span class="label">Guardrail</span>
+        <span class="stat c-cyan">31.0% → 33.0%</span>
+        <span class="tile-sub">Agent contact within 7 days. Baseline 31.0%, investigate at 33.0%.</span>
+      </div>
+      <div class="card">
+        <span class="label">Sample and read date</span>
+        <span class="stat c-blue">2,518 / arm</span>
+        <span class="tile-sub">50/50 split, 6 weeks of enrolment plus 60 days of follow-up, read at day 102, p &lt; 0.05.</span>
+      </div>
+    </div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card" style="border-color:rgba(52,211,153,0.5)"><span class="rule c-teal">SHIP</span><span class="small">If lift is at least 3 points and the guardrail holds.</span></div>
+      <div class="card" style="border-color:rgba(251,146,60,0.6)"><span class="rule c-orange">ITERATE</span><span class="small">If the lift is positive but below 3 points.</span></div>
+      <div class="card" style="border-color:rgba(244,114,182,0.5)"><span class="rule c-pink">KILL</span><span class="small">If there is no improvement.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9 -->
+<section id="s9" aria-label="Slide 9 Launch">
+  <div class="wrap">
+    <p class="eyebrow">Slide 9 · Launch</p>
+    <h2>GTM strategy and success dashboard</h2>
+    <div class="grid g2">
+      <div class="card">
+        <span class="label">Goal</span>
+        <span class="pill c-orange">Conversion</span>
+        <span class="label" style="margin-top:10px">Tier</span>
+        <span class="pill c-teal">M · targeted</span>
+        <p class="small muted" style="margin:6px 0 0">The feature changes the journey for every starter and agents need briefing, but no external campaign is needed.</p>
+      </div>
+      <div class="card">
+        <span class="label">Audience</span>
+        <p class="small" style="margin:0">Consumers who start the instalment journey in the portal: <b>8,360 per month</b> (22% of 38,000 portal visitors), 78.5% on mobile.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <span class="label">Channels</span>
+      <span class="pill c-cyan">Owned · instalment journey in the portal</span>
+      <span class="pill c-cyan">Owned · existing outreach to 100,000 consumers a month</span>
+      <span class="pill c-violet">Earned · client reporting and reviews</span>
+      <span class="label" style="margin-top:8px">Enablement</span>
+      <span class="pill c-blue">Agent one-pager</span>
+      <span class="pill c-blue">3-minute demo</span>
+      <span class="pill c-blue">Consumer FAQ</span>
+      <span class="pill c-blue">Escalation path</span>
+      <span class="pill c-blue">Compliance-approved wording</span>
+    </div>
+    <span class="label" style="margin-top:20px">Success metrics</span>
+    <div class="grid g3">
+      <div class="card"><span class="stat c-teal">84%+</span><span class="tile-sub">Agreements with no missed payment within 60 days. 81% today.</span></div>
+      <div class="card"><span class="stat c-cyan">≥ 43.0%</span><span class="tile-sub">Started journeys that end in an agreement. 46.0% today, must not fall below 43.0%.</span></div>
+      <div class="card"><span class="stat c-orange">&lt; 33.0%</span><span class="tile-sub">Agent contact within 7 days. 31.0% today, must stay below 33.0%.</span></div>
+    </div>
+    <div class="callout bad" style="margin-top:16px">
+      <span class="label" style="color:var(--pink)">Bad signal</span>
+      <p style="margin:0" class="small">The no-missed-payment rate rises but the agreement rate drops sharply, meaning the feature only filters people out, or agent contact reaches 33.0%.</p>
+    </div>
+    <p class="small" style="margin:14px 0 0"><span class="pill c-orange">Likely post-launch decision: iterate</span> because the 70% rule is only a sample.</p>
+  </div>
+</section>
+
+<!-- SLIDE 10 -->
+<section id="s10" aria-label="Slide 10 Story">
+  <div class="wrap">
+    <p class="eyebrow">Slide 10 · Story</p>
+    <h2>Friction points, the aha moment and what comes next</h2>
+    <div class="grid g2">
+      <div class="card hero">
+        <span class="label">Friction points and the aha moment</span>
+        <p>The hardest part was that my first idea of success was wrong. In M3 I measured success as the agreement rate, but my feature only shows plans the consumer can afford, so it could lower agreements on purpose.</p>
+        <p>The aha moment came in the experiment brief: the real goal is plans consumers keep, so I switched to the share of new agreements with no missed payment within 60 days.</p>
+        <p style="margin:0" class="muted">A second friction point was that the prototype crashed on a single apostrophe in the code, which taught me to test a prototype before trusting it.</p>
+      </div>
+      <div class="card">
+        <span class="label">Key takeaways</span>
+        <ul class="tight">
+          <li>Define success as an outcome the consumer benefits from, not a count of sign-ups.</li>
+          <li>A guardrail can be tripped by the feature itself, because sending consumers with no fitting plan to an agent may raise agent contact.</li>
+          <li>A 60-day metric needs a 60-day follow-up, so test length depends on the metric.</li>
+        </ul>
+        <span class="label" style="margin-top:14px">What I would do next</span>
+        <ul class="tight">
+          <li>Run the A/B test.</li>
+          <li>Replace the sample 70% rule with a compliance-approved affordability rule.</li>
+          <li>Test plan ordering so the most comfortable plan appears first.</li>
+          <li>Later, add multi-claim support, where agreement is only 27.6%.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THANK YOU -->
+<section id="submit" class="foot" aria-label="Thank you and submit">
+  <div class="wrap">
+    <p class="eyebrow">Thank you</p>
+    <h2 style="font-size:clamp(2.2rem,5vw,4rem)">Thank you</h2>
+    <p class="muted" style="font-size:1.1rem; max-width:52ch">Affordability check before the plan options (B3), Riverty BU Collection · A Fair Way Forward.</p>
+    <div class="meta" style="margin-top:20px">
+      <div><span class="label">Repo link</span><a href="https://github.com/CharlieCaglar/pm-final-project-riverty-CA2">https://github.com/CharlieCaglar/pm-final-project-riverty-CA2</a></div>
+      <div><span class="label">Cohort</span><span class="pill c-cyan">Caglar Acar · PM Cohort 2</span></div>
+    </div>
+    <span class="submit-pill">Submit to the learning platform</span>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function () {
+  var secs = Array.prototype.slice.call(document.querySelectorAll("main > section"));
+  var bar = document.getElementById("progress");
+  var nav = document.getElementById("dots");
+  var dots = [];
+  var cur = 0;
+
+  secs.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Go to slide " + (i + 1));
+    b.title = s.getAttribute("aria-label") || "Slide " + (i + 1);
+    b.addEventListener("click", function () { go(i); });
+    nav.appendChild(b);
+    dots.push(b);
+  });
+
+  function go(i) {
+    i = Math.max(0, Math.min(secs.length - 1, i));
+    secs[i].scrollIntoView({ block: "start" });
+  }
+
+  function update() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+    var y = window.scrollY + window.innerHeight * 0.35;
+    var idx = 0;
+    secs.forEach(function (s, k) { if (s.offsetTop <= y) { idx = k; } });
+    cur = idx;
+    dots.forEach(function (d, k) { d.classList.toggle("on", k === cur); });
+  }
+
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) { return; }
+    var k = e.key;
+    if (k === "ArrowDown" || k === "PageDown" || (k === " " && !e.shiftKey)) {
+      e.preventDefault(); go(cur + 1);
+    } else if (k === "ArrowUp" || k === "PageUp" || (k === " " && e.shiftKey)) {
+      e.preventDefault(); go(cur - 1);
+    } else if (k === "Home") {
+      e.preventDefault(); go(0);
+    } else if (k === "End") {
+      e.preventDefault(); go(secs.length - 1);
+    } else if (k === "Escape") {
+      go(0);
+    }
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
