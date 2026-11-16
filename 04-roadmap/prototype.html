@@ -367,7 +367,7 @@
 
     if (state.plans.length === 0) {
       var lead = state.limit === 0
-        ? 'Based on what you entered, there is nothing left after essential costs, so we can't suggest a monthly payment.'
+        ? 'Based on what you entered, there is nothing left after essential costs, so we cannot suggest a monthly payment.'
         : 'Based on what you entered, none of our plans fit within ' + money(state.limit) + ' a month.';
       $('supportLead').textContent = lead;
       $('agentMsg').hidden = true;
